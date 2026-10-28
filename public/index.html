@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Fotobox">
+    <meta name="theme-color" content="#a5b4fc">
+    <title>Fotobox – Konfiguration</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+        html { height:100%; background:linear-gradient(135deg,#a5b4fc 0%,#c4b5fd 100%); }
+        body {
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+            background:#a5b4fc;
+            background-attachment:fixed;
+            min-height:100vh;
+            padding:20px;
+            padding-top:max(20px,env(safe-area-inset-top));
+            padding-bottom:max(20px,env(safe-area-inset-bottom));
+            padding-left:env(safe-area-inset-left);
+            padding-right:env(safe-area-inset-right);
+            overscroll-behavior:none;
+            -webkit-overflow-scrolling:touch;
+        }
+        body::before { content:''; position:fixed; top:0; left:0; right:0; height:env(safe-area-inset-top,0); background:linear-gradient(135deg,#a5b4fc 0%,#c4b5fd 100%); z-index:9999; }
+        .container { max-width:720px; margin:0 auto; background:white; border-radius:20px; overflow:hidden; min-height:calc(100vh - 40px); margin-bottom:20px; box-shadow:0 12px 40px rgba(60,30,120,0.18); }
+        .header { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:white; padding:24px 30px; text-align:center; box-shadow:0 4px 12px rgba(118,75,162,0.25); position:relative; z-index:1; }
+        .header h2 { font-size:20px; }
+        .header .version-badge { display:inline-block; background:rgba(255,255,255,0.25); padding:2px 10px; border-radius:10px; font-size:12px; margin-top:6px; font-weight:600; }
+        .tabs { display:flex; background:#f8f9fa; border-bottom:2px solid #e0e0e0; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+        .tab { flex:1; min-width:90px; padding:14px 8px; text-align:center; cursor:pointer; border:none; background:none; font-size:13px; font-weight:600; color:#666; transition:all 0.2s; position:relative; white-space:nowrap; }
+        .tab.active { color:#667eea; }
+        .tab.active::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px; background:#667eea; }
+        .tab-content { display:none; padding:20px; }
+        .tab-content.active { display:block; }
+        .form-group { margin-bottom:20px; }
+        .form-group label { display:block; font-weight:600; margin-bottom:8px; color:#333; font-size:13px; }
+        .form-group select, .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="file"], .form-group textarea {
+            width:100%; padding:11px 14px; border:2px solid #e0e0e0; border-radius:10px; font-size:15px; background:#f8f9fa; font-family:inherit;
+        }
+        .form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline:none; border-color:#667eea; background:white; }
+        .form-group .hint { font-size:12px; color:#666; margin-top:5px; font-weight:normal; }
+        .form-row { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:end; }
+        .slider-row { display:flex; align-items:center; gap:12px; }
+        .slider-row input[type="range"] { flex:1; height:6px; border-radius:5px; background:#e0e0e0; outline:none; -webkit-appearance:none; }
+        .slider-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#667eea; cursor:pointer; }
+        .slider-row .slider-value { min-width:38px; text-align:center; font-weight:600; color:#667eea; font-size:14px; }
+        .switch-row { display:flex; align-items:center; gap:10px; cursor:pointer; }
+        .switch-row input[type="checkbox"] { width:20px; height:20px; cursor:pointer; accent-color:#667eea; }
+        .switch-row label { margin:0; cursor:pointer; }
+        .btn { display:inline-block; padding:13px 20px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; color:white; }
+        .btn:hover { transform:translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,0.15); }
+        .btn-primary { background:linear-gradient(135deg,#667eea,#764ba2); }
+        .btn-success { background:linear-gradient(135deg,#11998e,#38ef7d); }
+        .btn-warning { background:linear-gradient(135deg,#f093fb,#f5576c); }
+        .btn-secondary { background:#888; }
+        .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+        .btn-row .btn { font-size:13px; padding:12px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .btn-full { width:100%; }
+        .message { padding:12px 14px; border-radius:8px; margin-bottom:16px; display:none; font-size:14px; }
+        .message.success { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+        .message.error { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+        .message.info { background:#d1ecf1; color:#0c5460; border:1px solid #bee5eb; }
+        .layout-list { background:#f8f9fa; border-radius:10px; padding:10px; max-height:380px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+        .layout-item { display:flex; align-items:center; background:white; padding:10px 12px; margin-bottom:6px; border-radius:10px; border-left:3px solid #667eea; font-size:13px; transition:background 0.15s; }
+        .layout-item:hover { background:#f0f0ff; }
+        .layout-item .icon { font-size:18px; margin-right:10px; min-width:24px; text-align:center; line-height:1; }
+        .layout-item .type-name { color:#999; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; min-width:48px; }
+        .layout-item .summary { flex:1; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:0 10px; font-weight:500; }
+        .layout-item .actions { display:flex; gap:3px; flex-shrink:0; }
+        .layout-item .actions button { background:#f8f9fa; border:1px solid #e0e0e0; border-radius:6px; padding:5px 9px; font-size:12px; cursor:pointer; color:#666; transition:all 0.15s; }
+        .layout-item .actions button:hover { background:#667eea; color:white; border-color:#667eea; }
+        .layout-add { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:12px; }
+        .layout-add button { padding:9px 4px; font-size:11px; background:#eee; border:1px solid #ccc; border-radius:6px; cursor:pointer; color:#444; font-weight:600; }
+        .layout-add button:hover { background:#667eea; color:white; border-color:#667eea; }
+        .json-toggle { margin-top:14px; }
+        .json-area { width:100%; min-height:180px; font-family:Menlo,Consolas,monospace; font-size:12px; padding:10px; border:1px solid #ddd; border-radius:8px; background:#fafafa; resize:vertical; }
+        details summary { cursor:pointer; font-weight:600; color:#667eea; padding:6px 0; user-select:none; }
+        .modal-bg { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+        .modal-bg.active { display:flex; }
+        .modal { background:white; border-radius:14px; padding:24px; max-width:480px; width:100%; max-height:90vh; overflow-y:auto; }
+        .modal h3 { margin-bottom:14px; color:#333; }
+        .folder-section { margin-bottom:24px; }
+        .folder-header { background:linear-gradient(135deg,#667eea,#764ba2); color:white; padding:12px; border-radius:8px 8px 0 0; font-weight:600; font-size:14px; }
+        .file-list { border:2px solid #e0e0e0; border-top:none; border-radius:0 0 8px 8px; max-height:260px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+        .file-item { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border-bottom:1px solid #f0f0f0; }
+        .file-item:last-child { border-bottom:none; }
+        .file-name { font-weight:500; color:#333; font-size:13px; }
+        .file-size { font-size:11px; color:#999; margin-top:2px; }
+        .btn-delete { background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; }
+        .upload-area { margin-top:10px; padding:12px; background:#f8f9fa; border-radius:8px; }
+        .file-input-wrap { position:relative; overflow:hidden; display:block; width:100%; }
+        .file-input-wrap input[type=file] { position:absolute; left:-9999px; }
+        .file-input-label { display:block; padding:10px 14px; background:white; border:2px dashed #ccc; border-radius:8px; text-align:center; cursor:pointer; color:#666; font-size:13px; }
+        .file-input-label:hover { border-color:#667eea; color:#667eea; }
+        .selected-file { margin-top:8px; padding:8px; background:white; border-radius:6px; font-size:13px; color:#333; display:none; }
+        .status-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+        .status-badge { background:#f8f9fa; padding:10px 12px; border-radius:8px; font-size:13px; }
+        .status-badge .label { color:#666; font-size:11px; }
+        .status-badge .value { color:#333; font-weight:600; margin-top:3px; }
+        .status-badge.ok .value { color:#11998e; }
+        .status-badge.warn .value { color:#f5576c; }
+        .counter-box { margin-top:24px; margin-bottom:32px; padding:18px; background:#f8f9fa; border-radius:12px; display:flex; align-items:center; justify-content:space-between; }
+        .counter-box .label { font-size:12px; color:#666; margin-bottom:3px; }
+        .counter-box .value { font-size:28px; font-weight:700; color:#667eea; }
+        .loading { text-align:center; padding:40px; color:#999; }
+        h3.section-title { color:#333; font-size:15px; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid #eee; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>🖨️ Fotobox Konfiguration</h2>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="box">⚙️ Box</button>
+        <button class="tab" data-tab="layout">📋 Layout</button>
+        <button class="tab" data-tab="upload">☁️ Upload</button>
+        <button class="tab" data-tab="files">📁 Dateien</button>
+    </div>
+
+    <div class="tab-content active" id="tab-box">
+        <div id="msg-box" class="message"></div>
+        <div id="loading-box" class="loading">Lädt …</div>
+        <form id="form-box" style="display:none;">
+            <div class="status-grid" style="grid-template-columns:1fr 1fr;">
+                <div class="status-badge"><div class="label">Drucker-Profil</div><div class="value" id="readonlyPrinter">—</div></div>
+                <div class="status-badge"><div class="label">Kamera-Profil</div><div class="value" id="readonlyCamera">—</div></div>
+            </div>
+
+            <h3 class="section-title">📸 Foto-Aufnahme</h3>
+            <div class="form-group">
+                <label>Foto-Helligkeit</label>
+                <div class="slider-row">
+                    <input type="range" id="photoBrightness" min="0.5" max="3.0" step="0.1" value="1.5">
+                    <span id="brightnessVal" class="slider-value">1.5</span>
+                </div>
+                <div class="hint">Wirkt auf das Foto im Layout (alle photo-Elemente in der aktuellen Vorlage werden synchron gehalten).</div>
+            </div>
+            <div class="form-group">
+                <div class="switch-row">
+                    <input type="checkbox" id="focusManual">
+                    <label for="focusManual">Manueller Fokus</label>
+                </div>
+                <div id="focusSliderWrap" class="slider-row" style="display:none; margin-top:10px;">
+                    <input type="range" id="focusValue" min="0" max="255" step="1" value="60">
+                    <span id="focusVal" class="slider-value">60</span>
+                </div>
+                <div id="focusHint" class="hint" style="display:none;"></div>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn btn-primary">💾 Speichern</button>
+                <button type="button" class="btn btn-warning" id="btn-test-print">🖨️ Testdruck</button>
+            </div>
+            <div class="btn-row" style="margin-top:10px;">
+                <button type="button" class="btn btn-secondary" id="btn-camera-caps">🔍 Kamera-Check</button>
+                <button type="button" class="btn btn-warning" id="btn-live-preview">📹 Live-Preview</button>
+            </div>
+
+            <div class="counter-box">
+                <div>
+                    <div class="label">Fotos seit letztem Reset</div>
+                    <div class="value" id="counterDisplay">—</div>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-counter-reset" style="padding:8px 14px; font-size:12px;">Zurücksetzen</button>
+            </div>
+
+            <h3 class="section-title">💡 Auf sich aufmerksam machen</h3>
+            <div class="form-group">
+                <div class="switch-row">
+                    <input type="checkbox" id="attEnabled">
+                    <label for="attEnabled">Aktiv</label>
+                </div>
+                <div class="hint">Druckt automatisch eine Vorlage wenn die Box länger nicht benutzt wurde.</div>
+            </div>
+            <div class="form-group">
+                <label>Vorlage</label>
+                <select id="attPreset"><option value="">— wählen —</option></select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nach Minuten Inaktivität</label>
+                    <input type="number" id="attIdleMinutes" min="1" max="1440" value="30">
+                </div>
+                <div class="form-group">
+                    <label>Cooldown (Min)</label>
+                    <input type="number" id="attCooldownMinutes" min="1" max="1440" value="30">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="switch-row">
+                    <input type="checkbox" id="attRotated" checked>
+                    <label for="attRotated">Bon um 180° drehen</label>
+                </div>
+                <div class="hint">Drucker bringt Anfang zuerst raus → bei Rotation steht das Wichtige oben am hängenden Bon.</div>
+            </div>
+            <div class="btn-row">
+                <button type="button" class="btn btn-primary" id="btn-attention-save">💾 Speichern</button>
+                <button type="button" class="btn btn-warning" id="btn-attention-test">🧪 Jetzt testen</button>
+            </div>
+
+            <!-- Hidden Felder die das Speichern weiter unterstützt (würde sonst undefined senden) -->
+            <input type="hidden" id="boxName">
+            <input type="hidden" id="printerProfile">
+            <input type="hidden" id="printerIp">
+            <input type="hidden" id="printerPort">
+            <input type="hidden" id="cameraProfile">
+            <input type="hidden" id="buttonPin">
+            <input type="hidden" id="ledPin">
+        </form>
+    </div>
+
+    <div class="tab-content" id="tab-layout">
+        <div id="msg-layout" class="message"></div>
+
+        <h3 class="section-title">📚 Vorlagen</h3>
+        <div class="form-row" style="margin-bottom:6px;">
+            <div class="form-group" style="margin-bottom:0;">
+                <select id="presetSelect">
+                    <option value="">— Vorlage wählen —</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <button type="button" class="btn btn-success btn-full" id="btn-preset-load" style="padding:11px;">Laden</button>
+            </div>
+        </div>
+        <div class="btn-row" style="margin-bottom:18px;">
+            <button type="button" class="btn btn-primary" id="btn-preset-save">📚 Als Vorlage speichern</button>
+            <button type="button" class="btn btn-warning" id="btn-preset-delete">🗑 Vorlage löschen</button>
+        </div>
+        <div class="hint" style="margin-top:-12px; margin-bottom:18px; color:#666; font-size:12px;">
+            „Als Vorlage speichern" sichert aktuellen Stand als wiederverwendbares Preset.<br>
+            Damit das Layout auf der Box aktiv wird, am Ende der Seite auf „💾 Auf Box speichern" drücken.
+        </div>
+
+        <h3 class="section-title">📋 Layout</h3>
+        <p style="color:#666; font-size:13px; margin-bottom:14px;">
+            Layout-Elemente werden in dieser Reihenfolge auf den Bon gedruckt. Tippe auf ein Element zum Bearbeiten.
+        </p>
+        <div class="layout-list" id="layoutList"></div>
+        <div class="layout-add">
+            <button data-add="image">+ image</button>
+            <button data-add="text">+ text</button>
+            <button data-add="photo">+ photo</button>
+            <button data-add="qrcode">+ qrcode</button>
+            <button data-add="line">+ line</button>
+            <button data-add="feed">+ feed</button>
+            <button data-add="cut">+ cut</button>
+            <button data-add="hint">i Hinweis</button>
+        </div>
+        <textarea id="layoutJson" style="display:none;"></textarea>
+        <button type="button" id="btn-layout-json-apply" style="display:none;"></button>
+        <div class="btn-row" style="margin-top:14px;">
+            <button type="button" class="btn btn-primary" id="btn-layout-save">💾 Auf Box speichern</button>
+            <button type="button" class="btn btn-warning" id="btn-layout-preview">👁 Vorschau</button>
+        </div>
+        <div id="preview-container" style="margin-top:18px; display:none;">
+            <h3 class="section-title">Bon-Vorschau (rendered serverseitig)</h3>
+            <div style="background:#f8f9fa; padding:14px; border-radius:10px; text-align:center;">
+                <img id="layout-preview-img" style="max-width:100%; box-shadow:0 4px 14px rgba(0,0,0,0.18); background:white;" alt="Bon-Vorschau">
+                <div style="color:#666; font-size:11px; margin-top:8px;">
+                    Foto = testpattern.jpg. Wasserzeichen + Platzhalter werden mit aktueller Config angewendet.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-upload">
+        <div id="msg-upload" class="message"></div>
+        <div class="status-grid" id="uploadStatus" style="grid-template-columns:1fr 1fr 1fr;">
+            <div class="status-badge"><div class="label">Internet</div><div class="value">—</div></div>
+            <div class="status-badge"><div class="label">Drive</div><div class="value">—</div></div>
+            <div class="status-badge"><div class="label">Pending</div><div class="value">—</div></div>
+        </div>
+        <button type="button" class="btn btn-warning btn-full" id="btn-upload-retry" style="margin-bottom:18px;">📤 Pending jetzt versuchen</button>
+
+        <div class="form-group">
+            <label>Modus</label>
+            <select id="uploadMode">
+                <option value="normal">Normal (Druck → async Upload)</option>
+                <option value="directLink">DirectLink (sync Upload, QR mit Foto-Link)</option>
+            </select>
+        </div>
+
+
+        <h3 class="section-title">🎨 Wasserzeichen</h3>
+        <div class="form-group">
+            <div class="switch-row"><input type="checkbox" id="wmEnabled"><label for="wmEnabled">Wasserzeichen aktiv</label></div>
+        </div>
+        <div class="form-group">
+            <label>Wasserzeichen-Typ</label>
+            <select id="wmType">
+                <option value="text">Text</option>
+                <option value="image">Logo (Bild)</option>
+                <option value="both">Beides</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <div class="switch-row"><input type="checkbox" id="wmOnPrint"><label for="wmOnPrint">Auf Bon-Druck anwenden</label></div>
+        </div>
+        <div class="form-group">
+            <div class="switch-row"><input type="checkbox" id="wmOnDownload"><label for="wmOnDownload">Auf Download-Version anwenden</label></div>
+        </div>
+        <details>
+            <summary>📝 Text-Wasserzeichen</summary>
+            <div class="form-group" style="margin-top:10px;">
+                <label>Text-Inhalt</label>
+                <input type="text" id="wmTextContent" placeholder="© {{boxName}} • {{date}}">
+                <div class="hint">Platzhalter: {{boxName}}, {{date}}, {{time}}, {{counter}}, {{timestamp:FORMAT}}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Schriftgröße (px)</label>
+                    <input type="number" id="wmTextSize" min="10" max="200" step="2" value="48">
+                </div>
+                <div class="form-group">
+                    <label>Farbe</label>
+                    <input type="text" id="wmTextColor" value="white" placeholder="white, black, #ff8800">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Position</label>
+                <select id="wmTextPosition">
+                    <option value="top-left">oben links</option>
+                    <option value="top">oben mitte</option>
+                    <option value="top-right">oben rechts</option>
+                    <option value="left">mitte links</option>
+                    <option value="center">mitte</option>
+                    <option value="right">mitte rechts</option>
+                    <option value="bottom-left">unten links</option>
+                    <option value="bottom">unten mitte</option>
+                    <option value="bottom-right" selected>unten rechts</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Transparenz <span id="wmTextOpacityVal" class="slider-value">0.6</span></label>
+                <div class="slider-row">
+                    <input type="range" id="wmTextOpacity" min="0" max="1" step="0.05" value="0.6">
+                </div>
+                <div class="hint">0 = unsichtbar, 1 = voll deckend.</div>
+            </div>
+            <div class="form-group">
+                <label>Innen-Abstand vom Rand (px)</label>
+                <input type="number" id="wmTextMargin" min="0" max="200" step="5" value="30">
+            </div>
+        </details>
+
+        <details>
+            <summary>🖼 Logo-Wasserzeichen</summary>
+            <div class="form-group" style="margin-top:10px;">
+                <label>Logo aus „Wasserzeichen-Bilder"</label>
+                <select id="wmImageSource"><option value="">— keins —</option></select>
+                <div class="hint">Hochladen im 📁 Dateien-Tab, Sektion „Wasserzeichen-Bilder".</div>
+            </div>
+            <div class="form-group">
+                <label>Größe (Anteil der Bildbreite) <span id="wmImageScaleVal" class="slider-value">0.15</span></label>
+                <div class="slider-row">
+                    <input type="range" id="wmImageScale" min="0.05" max="0.5" step="0.01" value="0.15">
+                </div>
+                <div class="hint">0.15 = 15% der Foto-Breite; bei 1080px wären das ~162px Logo.</div>
+            </div>
+            <div class="form-group">
+                <label>Position</label>
+                <select id="wmImagePosition">
+                    <option value="top-left">oben links</option>
+                    <option value="top">oben mitte</option>
+                    <option value="top-right">oben rechts</option>
+                    <option value="left">mitte links</option>
+                    <option value="center">mitte</option>
+                    <option value="right">mitte rechts</option>
+                    <option value="bottom-left" selected>unten links</option>
+                    <option value="bottom">unten mitte</option>
+                    <option value="bottom-right">unten rechts</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Transparenz <span id="wmImageOpacityVal" class="slider-value">0.7</span></label>
+                <div class="slider-row">
+                    <input type="range" id="wmImageOpacity" min="0" max="1" step="0.05" value="0.7">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Innen-Abstand vom Rand (px)</label>
+                <input type="number" id="wmImageMargin" min="0" max="200" step="5" value="30">
+            </div>
+        </details>
+
+        <button type="button" class="btn btn-primary btn-full" id="btn-upload-save" style="margin-top:14px;">💾 Upload-Einstellungen speichern</button>
+    </div>
+
+    <div class="tab-content" id="tab-files">
+        <div id="msg-files" class="message"></div>
+        <div class="folder-section">
+            <div class="folder-header">📸 Logos Oben</div>
+            <div class="file-list" id="filesLogosOBEN"></div>
+            <div class="upload-area">
+                <form class="upload-form" data-folder="logosOBEN">
+                    <div class="file-input-wrap">
+                        <input type="file" id="fileLogosOBEN" accept="image/png,image/jpeg,image/jpg">
+                        <label for="fileLogosOBEN" class="file-input-label">📤 Datei auswählen</label>
+                    </div>
+                    <div class="selected-file" id="selectedLogosOBEN"></div>
+                    <button type="submit" class="btn btn-success btn-full" style="margin-top:8px;">Hochladen</button>
+                </form>
+            </div>
+        </div>
+        <div class="folder-section">
+            <div class="folder-header">📱 QR-Codes</div>
+            <div class="file-list" id="filesQr"></div>
+            <div class="upload-area">
+                <form class="upload-form" data-folder="qr">
+                    <div class="file-input-wrap">
+                        <input type="file" id="fileQr" accept="image/png,image/jpeg,image/jpg">
+                        <label for="fileQr" class="file-input-label">📤 Datei auswählen</label>
+                    </div>
+                    <div class="selected-file" id="selectedQr"></div>
+                    <button type="submit" class="btn btn-success btn-full" style="margin-top:8px;">Hochladen</button>
+                </form>
+            </div>
+        </div>
+        <div class="folder-section">
+            <div class="folder-header">🏷️ Logos Unten (klein)</div>
+            <div class="file-list" id="filesLogosUNTEN"></div>
+            <div class="upload-area">
+                <form class="upload-form" data-folder="logosUNTEN">
+                    <div class="file-input-wrap">
+                        <input type="file" id="fileLogosUNTEN" accept="image/png,image/jpeg,image/jpg">
+                        <label for="fileLogosUNTEN" class="file-input-label">📤 Datei auswählen</label>
+                    </div>
+                    <div class="selected-file" id="selectedLogosUNTEN"></div>
+                    <button type="submit" class="btn btn-success btn-full" style="margin-top:8px;">Hochladen</button>
+                </form>
+            </div>
+        </div>
+        <div class="folder-section">
+            <div class="folder-header">🎨 Wasserzeichen-Bilder</div>
+            <div class="file-list" id="filesWatermark"></div>
+            <div class="upload-area">
+                <form class="upload-form" data-folder="watermark">
+                    <div class="file-input-wrap">
+                        <input type="file" id="fileWatermark" accept="image/png,image/jpeg,image/jpg">
+                        <label for="fileWatermark" class="file-input-label">📤 Datei auswählen</label>
+                    </div>
+                    <div class="selected-file" id="selectedWatermark"></div>
+                    <button type="submit" class="btn btn-success btn-full" style="margin-top:8px;">Hochladen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Live-Preview der Kamera (für Fokus-Drehen) -->
+<div class="modal-bg" id="modal-live-preview">
+    <div class="modal" style="max-width:680px;">
+        <h3>📹 Live-Preview</h3>
+        <p style="color:#666; font-size:13px; margin-bottom:10px;">
+            Live-Bild der Kamera (~2 fps). Dreh am Linsenrad bis der Fokus passt, dann schließen.
+        </p>
+        <div style="text-align:center; background:#000; border-radius:10px; padding:8px; min-height:200px;">
+            <img id="live-preview-img" style="max-width:100%; display:block; margin:0 auto; border-radius:6px;" alt="Live-Preview">
+        </div>
+        <div id="live-preview-fps" style="text-align:center; color:#999; font-size:12px; margin-top:6px;">—</div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="live-preview-close">Schließen</button>
+            <button class="btn btn-primary" id="live-preview-snap">Snapshot speichern</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Preset speichern (mit Auswahl was übernommen wird) -->
+    <div class="modal-bg" id="modal-preset-save">
+        <div class="modal">
+            <h3>Vorlage speichern</h3>
+            <div class="form-group">
+                <label>Name der Vorlage</label>
+                <input type="text" id="presetSaveName" placeholder="z.B. Freitags-Special">
+            </div>
+            <div class="form-group">
+                <label>Was übernehmen?</label>
+                <div class="switch-row" style="margin-bottom:8px;"><input type="checkbox" id="presetIncludeLayout" checked><label>Layout (das aktuelle Element-Array)</label></div>
+                <div class="switch-row" style="margin-bottom:8px;"><input type="checkbox" id="presetIncludeUpload"><label>Upload-Einstellungen (mode, folderName, etc.)</label></div>
+                <div class="switch-row"><input type="checkbox" id="presetIncludeWatermark"><label>Wasserzeichen-Settings</label></div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" id="preset-save-cancel">Abbrechen</button>
+                <button class="btn btn-primary" id="preset-save-confirm">Speichern</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-bg" id="modal-edit">
+    <div class="modal">
+        <h3 id="modal-title">Element bearbeiten</h3>
+        <div id="modal-body"></div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="modal-cancel">Abbrechen</button>
+            <button class="btn btn-primary" id="modal-save">Übernehmen</button>
+        </div>
+    </div>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+
+let configState = null;
+let printerProfiles = [];
+let cameraProfiles = [];
+let allImages = [];       // [{ path, folder, name }]
+let presetList = [];
+
+document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+        if (t.dataset.tab === 'files') loadFiles();
+        if (t.dataset.tab === 'upload') loadUploadStatus();
+        if (t.dataset.tab === 'layout') renderLayoutList();
+    });
+});
+
+function showMsg(tabId, text, type='info') {
+    const el = document.getElementById('msg-' + tabId);
+    el.textContent = text; el.className = 'message ' + type;
+    el.style.display = 'block';
+    setTimeout(()=>{ el.style.display='none'; }, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await loadProfiles();
+        await loadAllImages();
+        await loadConfig();
+        await loadCounter();
+        await loadPresets();
+        setupFormHandlers();
+        setupLayoutEditor();
+        setupFileForms();
+        setupPresetHandlers();
+        setupCameraHandlers();
+        // Capabilities check sofort — UI passt Fokus-Slider entsprechend an
+        applyCameraCapabilities();
+    } catch (e) {
+        console.error(e);
+        document.getElementById('loading-box').textContent = 'Fehler: ' + e.message;
+    }
+});
+
+// Globaler Cache, damit der photo-Modal-Renderer das ohne Network-Roundtrip kennt.
+let _cameraCapsCache = null;
+
+async function applyCameraCapabilities() {
+    try {
+        const caps = await fetch('/api/camera/capabilities').then(r=>r.json());
+        _cameraCapsCache = caps;
+        const hint = document.getElementById('focusHint');
+        const focusCheckbox = document.getElementById('focusManual');
+        const focusSlider = document.getElementById('focusValue');
+        if (caps.hasManualFocus) {
+            hint.textContent = `Kamera unterstützt elektronischen Fokus (${caps.controls?.focus_absolute ? 'focus_absolute' : 'focus'}).`;
+            hint.style.display = 'block';
+            focusCheckbox.disabled = false;
+            focusSlider.disabled = false;
+        } else if (caps.hasAutoFocus) {
+            hint.textContent = 'Kamera hat nur Autofokus — manueller Fokus nicht möglich.';
+            hint.style.display = 'block';
+            focusCheckbox.disabled = true;
+            focusCheckbox.checked = false;
+            focusSlider.disabled = true;
+            document.getElementById('focusSliderWrap').style.display = 'none';
+        } else {
+            hint.textContent = 'Kamera hat keinen elektronischen Fokus — manuell am Linsenrad einstellen (📹 Live-Preview hilft).';
+            hint.style.display = 'block';
+            focusCheckbox.disabled = true;
+            focusCheckbox.checked = false;
+            focusSlider.disabled = true;
+            document.getElementById('focusSliderWrap').style.display = 'none';
+        }
+    } catch (e) { console.warn('Camera-caps konnte nicht ermittelt werden:', e); }
+}
+
+let livePreviewActive = false;
+let livePreviewTimer = null;
+let livePreviewFrames = 0;
+let livePreviewStart = 0;
+
+function setupCameraHandlers() {
+    document.getElementById('btn-camera-caps').addEventListener('click', async () => {
+        try {
+            const c = await fetch('/api/camera/capabilities').then(r=>r.json());
+            const lines = [
+                `Device:         ${c.device}`,
+                `Fokus-Modus:    ${c.focusMode}`,
+                `Auto-Fokus:     ${c.hasAutoFocus ? 'ja' : 'nein'}`,
+                `Manueller F.:   ${c.hasManualFocus ? 'ja (elektronisch)' : 'nein (ggf mechanisch am Rad)'}`,
+                `Controls:       ${Object.keys(c.controls || {}).join(', ') || '(keine)'}`,
+            ];
+            if (c.error) lines.push(`Fehler:        ${c.error}`);
+            alert(lines.join('\n'));
+        } catch (e) { showMsg('box', e.message, 'error'); }
+    });
+
+    document.getElementById('btn-live-preview').addEventListener('click', () => {
+        document.getElementById('modal-live-preview').classList.add('active');
+        startLivePreview();
+    });
+    document.getElementById('live-preview-close').addEventListener('click', stopLivePreview);
+    document.getElementById('live-preview-snap').addEventListener('click', async () => {
+        // Snapshot via fetch + Download im Browser
+        try {
+            const blob = await fetch('/api/camera/snapshot?t=' + Date.now()).then(r => r.blob());
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'snapshot-' + Date.now() + '.jpg';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(()=>URL.revokeObjectURL(url), 1000);
+        } catch (e) { showMsg('box', e.message, 'error'); }
+    });
+}
+
+function startLivePreview() {
+    const img = document.getElementById('live-preview-img');
+    const fpsEl = document.getElementById('live-preview-fps');
+    livePreviewActive = true;
+    livePreviewFrames = 0;
+    livePreviewStart = Date.now();
+    const tick = () => {
+        if (!livePreviewActive) return;
+        const nextSrc = '/api/camera/snapshot?t=' + Date.now();
+        const probe = new Image();
+        probe.onload = () => {
+            if (!livePreviewActive) return;   // Modal wurde inzwischen geschlossen
+            img.src = nextSrc;
+            livePreviewFrames++;
+            const fps = (livePreviewFrames / ((Date.now() - livePreviewStart) / 1000)).toFixed(1);
+            fpsEl.textContent = `${livePreviewFrames} Frames · ${fps} fps`;
+            livePreviewTimer = setTimeout(tick, 0);   // sofort weiter
+        };
+        probe.onerror = () => {
+            if (!livePreviewActive) return;
+            livePreviewTimer = setTimeout(tick, 800);   // bei Fehler: kurz warten
+        };
+        probe.src = nextSrc;
+    };
+    tick();
+}
+
+function stopLivePreview() {
+    livePreviewActive = false;
+    if (livePreviewTimer) { clearTimeout(livePreviewTimer); livePreviewTimer = null; }
+    document.getElementById('modal-live-preview').classList.remove('active');
+    document.getElementById('live-preview-img').src = '';
+    // Server-side fswebcam stoppen (Kamera freigeben)
+    fetch('/api/camera/snapshot/stop', { method: 'POST' }).catch(()=>{});
+}
+
+async function loadAllImages() {
+    try {
+        const r = await fetch('/api/files/all').then(x=>x.json());
+        allImages = r.files || [];
+    } catch (e) { allImages = []; }
+    // Watermark-Image-Dropdown füllen
+    const wmSel = document.getElementById('wmImageSource');
+    if (wmSel) {
+        const wmFiles = allImages.filter(f => f.folder === 'watermark');
+        const current = wmSel.value;
+        wmSel.innerHTML = '<option value="">— keins —</option>' +
+            wmFiles.map(f => `<option value="${f.path}">${f.name}</option>`).join('');
+        if (current && wmFiles.some(f => f.path === current)) wmSel.value = current;
+    }
+}
+
+async function loadPresets() {
+    try {
+        const r = await fetch('/api/presets').then(x=>x.json());
+        presetList = r.presets || [];
+    } catch (e) { presetList = []; }
+    const sel = document.getElementById('presetSelect');
+    if (sel) {
+        sel.innerHTML = '<option value="">— Vorlage wählen —</option>' +
+            presetList.map(p => {
+                const tags = [
+                    p.hasLayout ? 'Layout' : '',
+                    p.hasUpload ? 'Upload' : '',
+                    p.hasWatermark ? 'WM' : ''
+                ].filter(Boolean).join('+');
+                return `<option value="${p.name}">${p.name}${tags ? ' (' + tags + ')' : ''}</option>`;
+            }).join('');
+    }
+    populateAttPresetSelect();
+}
+
+function populateAttPresetSelect() {
+    const sel = document.getElementById('attPreset');
+    if (!sel) return;
+    const current = configState?.attention?.preset || sel.value;
+    sel.innerHTML = '<option value="">— wählen —</option>' +
+        presetList.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    if (current && presetList.some(p => p.name === current)) sel.value = current;
+}
+
+async function loadProfiles() {
+    const [pr, ca] = await Promise.all([
+        fetch('/api/profiles/printers').then(r=>r.json()),
+        fetch('/api/profiles/cameras').then(r=>r.json())
+    ]);
+    printerProfiles = pr.profiles || [];
+    cameraProfiles = ca.profiles || [];
+    // Profile-Anzeige passiert in loadConfig() als readonly Text.
+}
+
+async function loadConfig() {
+    const cfg = await fetch('/api/config').then(r=>r.json());
+    configState = cfg;
+    document.getElementById('boxName').value         = cfg.boxName || '';
+    document.getElementById('printerProfile').value  = cfg.printer?.profile || '';
+    document.getElementById('printerIp').value       = cfg.printer?.ip || 'auto';
+    document.getElementById('printerPort').value     = cfg.printer?.port || '';
+    document.getElementById('cameraProfile').value   = cfg.camera?.profile || '';
+    // Readonly-Anzeigen
+    document.getElementById('readonlyPrinter').textContent = cfg.printer?.profile || '—';
+    document.getElementById('readonlyCamera').textContent  = cfg.camera?.profile || '—';
+
+    // Attention
+    const att = cfg.attention || {};
+    document.getElementById('attEnabled').checked        = !!att.enabled;
+    document.getElementById('attIdleMinutes').value      = att.idleMinutes ?? 30;
+    document.getElementById('attCooldownMinutes').value  = att.cooldownMinutes ?? att.idleMinutes ?? 30;
+    document.getElementById('attRotated').checked        = att.rotated !== false;
+    // attPreset wird nach loadPresets korrekt gesetzt
+    populateAttPresetSelect();
+    // Brightness-Slider zeigt: erstes photo-Element im Layout (falls vorhanden) ODER config.photoBrightness als Fallback
+    const firstPhoto = (cfg.layout || []).find(e => e && e.type === 'photo');
+    const initialBrightness = firstPhoto?.brightness ?? cfg.photoBrightness ?? 1.5;
+    document.getElementById('photoBrightness').value = initialBrightness;
+    document.getElementById('brightnessVal').textContent = initialBrightness;
+    // Fokus-Slider zeigt: erstes photo-Element im Layout (falls vorhanden) ODER config.camera.focusAbsolute
+    const focusFromLayout = (firstPhoto && typeof firstPhoto.focusAbsolute === 'number') ? firstPhoto.focusAbsolute : null;
+    const initialFocus = focusFromLayout !== null ? focusFromLayout : (cfg.camera?.focusAbsolute ?? -1);
+    if (typeof initialFocus === 'number' && initialFocus >= 0) {
+        document.getElementById('focusManual').checked = true;
+        document.getElementById('focusSliderWrap').style.display = 'flex';
+        document.getElementById('focusValue').value = initialFocus;
+        document.getElementById('focusVal').textContent = initialFocus;
+    } else {
+        document.getElementById('focusManual').checked = false;
+        document.getElementById('focusSliderWrap').style.display = 'none';
+    }
+    document.getElementById('buttonPin').value = cfg.gpio?.buttonPin ?? 27;
+    document.getElementById('ledPin').value    = cfg.gpio?.ledPin ?? 17;
+    document.getElementById('uploadMode').value      = cfg.upload?.mode || 'normal';
+    document.getElementById('wmEnabled').checked     = !!cfg.watermark?.enabled;
+    document.getElementById('wmType').value          = cfg.watermark?.type || 'text';
+    document.getElementById('wmOnPrint').checked     = !!cfg.watermark?.applyToBonPrint;
+    document.getElementById('wmOnDownload').checked  = !!cfg.watermark?.applyToDownload;
+    document.getElementById('wmTextContent').value   = cfg.watermark?.text?.content || cfg.watermark?.text || '';
+    const wm = cfg.watermark || {};
+    const wmTextObj  = (typeof wm.text === 'object' && wm.text)  ? wm.text  : { content: wm.text || '' };
+    const wmImageObj = (typeof wm.image === 'object' && wm.image) ? wm.image : { source: wm.image || '' };
+    document.getElementById('wmTextContent').value  = wmTextObj.content || '';
+    document.getElementById('wmTextSize').value     = wmTextObj.fontSize ?? 48;
+    document.getElementById('wmTextColor').value    = wmTextObj.color || 'white';
+    document.getElementById('wmTextPosition').value = wmTextObj.position || 'bottom-right';
+    document.getElementById('wmTextOpacity').value  = wmTextObj.opacity ?? 0.6;
+    document.getElementById('wmTextOpacityVal').textContent = wmTextObj.opacity ?? 0.6;
+    document.getElementById('wmTextMargin').value   = wmTextObj.margin ?? 30;
+
+    const wmImg = wmImageObj.source || '';
+    const wmSel = document.getElementById('wmImageSource');
+    if (wmSel && wmImg && !Array.from(wmSel.options).some(o => o.value === wmImg)) {
+        const opt = document.createElement('option');
+        opt.value = wmImg; opt.textContent = wmImg + ' (außerhalb watermark/)';
+        wmSel.appendChild(opt);
+    }
+    if (wmSel) wmSel.value = wmImg;
+    document.getElementById('wmImageScale').value   = wmImageObj.scale ?? 0.15;
+    document.getElementById('wmImageScaleVal').textContent = wmImageObj.scale ?? 0.15;
+    document.getElementById('wmImagePosition').value = wmImageObj.position || 'bottom-left';
+    document.getElementById('wmImageOpacity').value = wmImageObj.opacity ?? 0.7;
+    document.getElementById('wmImageOpacityVal').textContent = wmImageObj.opacity ?? 0.7;
+    document.getElementById('wmImageMargin').value  = wmImageObj.margin ?? 30;
+    document.getElementById('loading-box').style.display = 'none';
+    document.getElementById('form-box').style.display    = 'block';
+    renderLayoutList();
+}
+
+function setupFormHandlers() {
+    document.getElementById('photoBrightness').addEventListener('input', e => {
+        const val = parseFloat(e.target.value);
+        document.getElementById('brightnessVal').textContent = val.toFixed(1);
+        // Wert in alle photo-Elemente im Layout durchschreiben + globalen Fallback
+        if (configState) {
+            configState.photoBrightness = val;
+            if (Array.isArray(configState.layout)) {
+                configState.layout.forEach(el => {
+                    if (el && el.type === 'photo') el.brightness = val;
+                });
+                // Layout-Liste neu rendern (falls Layout-Tab gerade offen ist)
+                renderLayoutList();
+            }
+        }
+    });
+    function syncFocusToLayout(val) {
+        if (!configState) return;
+        if (!configState.camera) configState.camera = {};
+        configState.camera.focusAbsolute = val;
+        if (Array.isArray(configState.layout)) {
+            configState.layout.forEach(el => { if (el?.type === 'photo') el.focusAbsolute = val; });
+            renderLayoutList();
+        }
+    }
+    document.getElementById('focusManual').addEventListener('change', e => {
+        document.getElementById('focusSliderWrap').style.display = e.target.checked ? 'flex' : 'none';
+        const val = e.target.checked ? parseInt(document.getElementById('focusValue').value) : -1;
+        syncFocusToLayout(val);
+    });
+    document.getElementById('focusValue').addEventListener('input', e => {
+        const val = parseInt(e.target.value);
+        document.getElementById('focusVal').textContent = val;
+        syncFocusToLayout(val);
+    });
+    ['wmTextOpacity', 'wmImageOpacity', 'wmImageScale'].forEach(id => {
+        const el = document.getElementById(id);
+        const valEl = document.getElementById(id + 'Val');
+        if (el && valEl) el.addEventListener('input', e => { valEl.textContent = e.target.value; });
+    });
+
+    document.getElementById('form-box').addEventListener('submit', async e => {
+        e.preventDefault();
+        const c = configState || {};
+        c.boxName = document.getElementById('boxName').value;
+        c.printer = { ...(c.printer || {}),
+            profile: document.getElementById('printerProfile').value,
+            ip:      document.getElementById('printerIp').value || 'auto',
+            port:    parseInt(document.getElementById('printerPort').value) || undefined,
+        };
+        c.camera = { ...(c.camera || {}),
+            profile:       document.getElementById('cameraProfile').value,
+            focusAbsolute: document.getElementById('focusManual').checked ? parseInt(document.getElementById('focusValue').value) : -1,
+        };
+        c.gpio = { buttonPin: parseInt(document.getElementById('buttonPin').value), ledPin: parseInt(document.getElementById('ledPin').value) };
+        c.photoBrightness = parseFloat(document.getElementById('photoBrightness').value);
+        try {
+            const resp = await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(c) });
+            const r = await resp.json();
+            if (resp.ok) showMsg('box', r.message || 'Gespeichert!', 'success');
+            else showMsg('box', (r.error || 'Fehler') + (r.details ? ': ' + r.details.join('; ') : ''), 'error');
+        } catch (e) { showMsg('box', 'Fehler: ' + e.message, 'error'); }
+    });
+
+    document.getElementById('btn-test-print').addEventListener('click', async () => {
+        showMsg('box', 'Testdruck läuft …', 'info');
+        try {
+            const r = await fetch('/api/test-print', { method:'POST' }).then(x=>x.json());
+            if (r.success) showMsg('box', r.message || 'OK', 'success');
+            else showMsg('box', r.error || 'Fehler', 'error');
+        } catch (e) { showMsg('box', e.message, 'error'); }
+    });
+
+    document.getElementById('btn-counter-reset').addEventListener('click', async () => {
+        if (!confirm('Zähler auf 0 setzen?')) return;
+        try { await fetch('/api/counter/reset', { method:'POST' }); document.getElementById('counterDisplay').textContent = '0'; showMsg('box', 'Zähler zurückgesetzt.', 'success'); }
+        catch (e) { showMsg('box', e.message, 'error'); }
+    });
+
+    // Attention
+    document.getElementById('btn-attention-save').addEventListener('click', async () => {
+        const c = configState || {};
+        c.attention = {
+            enabled:         document.getElementById('attEnabled').checked,
+            preset:          document.getElementById('attPreset').value,
+            idleMinutes:     parseInt(document.getElementById('attIdleMinutes').value)     || 30,
+            cooldownMinutes: parseInt(document.getElementById('attCooldownMinutes').value) || 30,
+            rotated:         document.getElementById('attRotated').checked,
+        };
+        try {
+            const resp = await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(c) });
+            const r = await resp.json();
+            if (resp.ok) showMsg('box', 'Aufmerksamkeit gespeichert.', 'success');
+            else showMsg('box', (r.error || 'Fehler') + (r.details ? ': ' + r.details.join('; ') : ''), 'error');
+        } catch (e) { showMsg('box', e.message, 'error'); }
+    });
+    document.getElementById('btn-attention-test').addEventListener('click', async () => {
+        const presetName = document.getElementById('attPreset').value;
+        if (!presetName) { showMsg('box', 'Erst Vorlage wählen + speichern.', 'error'); return; }
+        const rotated = document.getElementById('attRotated').checked;
+        showMsg('box', 'Test-Druck läuft …', 'info');
+        try {
+            const resp = await fetch('/api/attention/test', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ preset: presetName, rotated })
+            });
+            const r = await resp.json();
+            if (resp.ok) showMsg('box', r.message, 'success');
+            else showMsg('box', r.error, 'error');
+        } catch (e) { showMsg('box', e.message, 'error'); }
+    });
+
+    document.getElementById('btn-upload-save').addEventListener('click', async () => {
+        const c = configState || {};
+        // Nur 'mode' wird im UI editiert. Restliche upload-Felder bleiben unverändert.
+        c.upload = { ...(c.upload || {}),
+            mode: document.getElementById('uploadMode').value,
+        };
+        c.watermark = { ...(c.watermark || {}),
+            enabled:         document.getElementById('wmEnabled').checked,
+            type:            document.getElementById('wmType').value,
+            applyToBonPrint: document.getElementById('wmOnPrint').checked,
+            applyToDownload: document.getElementById('wmOnDownload').checked,
+            text: {
+                content:  document.getElementById('wmTextContent').value,
+                fontSize: parseInt(document.getElementById('wmTextSize').value)   || 48,
+                color:    document.getElementById('wmTextColor').value           || 'white',
+                opacity:  parseFloat(document.getElementById('wmTextOpacity').value) || 0.6,
+                position: document.getElementById('wmTextPosition').value       || 'bottom-right',
+                margin:   parseInt(document.getElementById('wmTextMargin').value)  || 30,
+            },
+            image: {
+                source:   document.getElementById('wmImageSource').value,
+                scale:    parseFloat(document.getElementById('wmImageScale').value)  || 0.15,
+                opacity:  parseFloat(document.getElementById('wmImageOpacity').value) || 0.7,
+                position: document.getElementById('wmImagePosition').value           || 'bottom-left',
+                margin:   parseInt(document.getElementById('wmImageMargin').value)  || 30,
+            },
+        };
+        try {
+            const resp = await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(c) });
+            const r = await resp.json();
+            if (resp.ok) showMsg('upload', r.message || 'Gespeichert!', 'success');
+            else showMsg('upload', (r.error || 'Fehler') + (r.details ? ': ' + r.details.join('; ') : ''), 'error');
+        } catch (e) { showMsg('upload', e.message, 'error'); }
+    });
+
+    document.getElementById('btn-upload-retry').addEventListener('click', async () => {
+        showMsg('upload', 'Pending wird verarbeitet …', 'info');
+        try {
+            const r = await fetch('/api/upload/retry', { method:'POST' }).then(x=>x.json());
+            showMsg('upload', `${r.uploaded||0}/${r.totalBefore||0} hochgeladen.`, 'success');
+            await loadUploadStatus();
+        } catch (e) { showMsg('upload', e.message, 'error'); }
+    });
+}
+
+async function loadUploadStatus() {
+    try {
+        const s = await fetch('/api/upload/status').then(r=>r.json());
+        const driveLabel = s.driveAuthOk
+            ? (s.driveUser ? s.driveUser : 'OK ✓')
+            : 'nicht auth ✗';
+        const badges = [
+            { label:'Internet', value: s.online ? 'online ✓' : 'offline ✗', ok:s.online },
+            { label:'Drive',    value: driveLabel, ok:!!s.driveAuthOk },
+            { label:'Pending',  value: s.pendingCount + ' Foto(s)', ok:s.pendingCount === 0 },
+        ];
+        document.getElementById('uploadStatus').innerHTML = badges.map(b => `
+            <div class="status-badge ${b.ok ? 'ok' : 'warn'}">
+                <div class="label">${b.label}</div>
+                <div class="value">${b.value}</div>
+            </div>`).join('');
+    } catch (e) { console.error(e); }
+}
+
+async function loadCounter() {
+    try { const r = await fetch('/api/counter').then(x=>x.json()); document.getElementById('counterDisplay').textContent = r.photoCount; }
+    catch (e) { document.getElementById('counterDisplay').textContent = '?'; }
+}
+
+function renderLayoutList() {
+    const list = document.getElementById('layoutList');
+    const layout = configState?.layout || [];
+    if (layout.length === 0) {
+        list.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">Noch keine Elemente.</div>';
+    } else {
+        list.innerHTML = layout.map((el, i) => `
+            <div class="layout-item">
+                <span class="icon">${iconFor(el.type)}</span>
+                <span class="type-name">${el.type}</span>
+                <span class="summary">${escapeHtml(summaryFor(el))}</span>
+                <span class="actions">
+                    <button onclick="moveElement(${i}, -1)" title="Hoch">↑</button>
+                    <button onclick="moveElement(${i}, 1)" title="Runter">↓</button>
+                    <button onclick="editElement(${i})" title="Bearbeiten">✎</button>
+                    <button onclick="deleteElement(${i})" title="Löschen">×</button>
+                </span>
+            </div>`).join('');
+    }
+    document.getElementById('layoutJson').value = JSON.stringify(layout, null, 2);
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function iconFor(type) {
+    return ({
+        image:  '🖼️',
+        text:   '📝',
+        photo:  '📸',
+        qrcode: '🔳',
+        line:   '➖',
+        feed:   '⤓',
+        cut:    '✂️',
+    })[type] || '❔';
+}
+
+function summaryFor(el) {
+    if (el.type === 'text')   return '„' + (el.content || '') + '"' + (el.size && el.size > 1 ? ' · ' + el.size + '×' : '');
+    if (el.type === 'image')  return (el.source || '?') + (el.width ? ' · ' + el.width + 'px' : '') + (el.brightness && el.brightness !== 1.0 ? ' · ☀ ' + el.brightness : '');
+    if (el.type === 'photo') {
+        const parts = ['☀ ' + (el.brightness ?? 'default')];
+        if (typeof el.focusAbsolute === 'number' && el.focusAbsolute >= 0) parts.push('🎯 ' + el.focusAbsolute);
+        else if (el.focusAbsolute === -1) parts.push('🎯 auto');
+        if (el.useWatermark === true)  parts.push('mit Wasserzeichen');
+        else if (el.useWatermark === false) parts.push('ohne Wasserzeichen');
+        // sonst (= undefined): folgt Upload-Setting, kein Hint nötig
+        return parts.join(' · ');
+    }
+    if (el.type === 'qrcode') return el.data ? '„' + el.data + '"' : 'fallback: ' + (el.fallback || '?');
+    if (el.type === 'line')   return (el.char || '-') + ' × ' + (el.width || 42);
+    if (el.type === 'feed')   return (el.lines || 1) + ' Zeile' + ((el.lines||1) === 1 ? '' : 'n');
+    if (el.type === 'cut')    return (el.mode || 'partial') + ' cut';
+    return JSON.stringify(el);
+}
+
+function setupLayoutEditor() {
+    document.querySelectorAll('.layout-add button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const t = btn.dataset.add;
+            if (t === 'hint') { showLayoutHint(); return; }
+            addElement(t);
+        });
+    });
+    document.getElementById('btn-layout-json-apply').addEventListener('click', () => {
+        try {
+            const parsed = JSON.parse(document.getElementById('layoutJson').value);
+            if (!Array.isArray(parsed)) throw new Error('Layout muss ein Array sein.');
+            configState.layout = parsed;
+            renderLayoutList();
+            showMsg('layout', 'JSON übernommen (noch nicht gespeichert).', 'info');
+        } catch (e) { showMsg('layout', 'JSON-Fehler: ' + e.message, 'error'); }
+    });
+    document.getElementById('btn-layout-preview').addEventListener('click', async () => {
+        const btn = document.getElementById('btn-layout-preview');
+        const orig = btn.innerHTML;
+        btn.innerHTML = 'Rendert …'; btn.disabled = true;
+        try {
+            const resp = await fetch('/api/layout/preview', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ config: configState, layout: configState.layout })
+            });
+            if (!resp.ok) {
+                const err = await resp.json().catch(()=>({error: 'Fehler ' + resp.status}));
+                throw new Error(err.error || 'Fehler');
+            }
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const img = document.getElementById('layout-preview-img');
+            img.onload = () => URL.revokeObjectURL(url);
+            img.src = url;
+            document.getElementById('preview-container').style.display = 'block';
+            showMsg('layout', 'Vorschau aktualisiert.', 'success');
+        } catch (e) {
+            showMsg('layout', 'Vorschau-Fehler: ' + e.message, 'error');
+        } finally {
+            btn.innerHTML = orig; btn.disabled = false;
+        }
+    });
+
+    document.getElementById('btn-layout-save').addEventListener('click', async () => {
+        try {
+            const resp = await fetch('/api/layout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ layout: configState.layout }) });
+            const r = await resp.json();
+            if (resp.ok) showMsg('layout', r.message || 'Gespeichert!', 'success');
+            else showMsg('layout', (r.error || 'Fehler') + (r.details ? ': ' + r.details.join('; ') : ''), 'error');
+        } catch (e) { showMsg('layout', e.message, 'error'); }
+    });
+    document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    document.getElementById('modal-save').addEventListener('click', saveModal);
+}
+
+function addElement(type) {
+    const defaults = {
+        image:  { type:'image',  source:'', width:512, align:'center' },
+        text:   { type:'text',   content:'', align:'center' },
+        photo:  { type:'photo',  brightness:1.5 },
+        qrcode: { type:'qrcode', data:'', size:200, align:'center', fallback:'' },
+        line:   { type:'line',   char:'-', width:42, align:'center' },
+        feed:   { type:'feed',   lines:1 },
+        cut:    { type:'cut',    mode:'partial' },
+    };
+    if (!configState.layout) configState.layout = [];
+    configState.layout.push(defaults[type]);
+    renderLayoutList();
+    editElement(configState.layout.length - 1);
+}
+
+window.deleteElement = (i) => { if (confirm('Element löschen?')) { configState.layout.splice(i, 1); renderLayoutList(); } };
+window.moveElement = (i, dir) => {
+    const j = i + dir; if (j < 0 || j >= configState.layout.length) return;
+    [configState.layout[i], configState.layout[j]] = [configState.layout[j], configState.layout[i]];
+    renderLayoutList();
+};
+
+let editingIdx = -1;
+window.editElement = (i) => {
+    editingIdx = i;
+    const el = configState.layout[i];
+    document.getElementById('modal-title').textContent = el.type + ' bearbeiten';
+    document.getElementById('modal-body').innerHTML = buildModalForm(el);
+    document.getElementById('modal-edit').classList.add('active');
+};
+
+function buildModalForm(el) {
+    let html = '';
+    const field = (k, label, val, type='text') => `
+        <div class="form-group">
+            <label>${label}</label>
+            <input type="${type}" data-k="${k}" value="${val == null ? '' : String(val).replace(/"/g,'&quot;')}">
+        </div>`;
+    const select = (k, label, val, options) => `
+        <div class="form-group">
+            <label>${label}</label>
+            <select data-k="${k}">${options.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>
+        </div>`;
+    if (el.type === 'text') {
+        html += field('content', 'Inhalt', el.content);
+        html += select('align', 'Ausrichtung', el.align || 'left', ['left','center','right']);
+        const sizeVal = String(el.size || 1);
+        html += `<div class="form-group">
+            <label>Textgröße</label>
+            <select data-k="size">
+                <option value="1" ${sizeVal==='1'?'selected':''}>1× (normal)</option>
+                <option value="2" ${sizeVal==='2'?'selected':''}>2× (doppelt)</option>
+                <option value="3" ${sizeVal==='3'?'selected':''}>3× (dreifach)</option>
+                <option value="4" ${sizeVal==='4'?'selected':''}>4× (riesig)</option>
+            </select>
+        </div>`;
+    } else if (el.type === 'image') {
+        const opts = allImages.map(f => `<option value="${f.path}" ${el.source === f.path ? 'selected' : ''}>${f.path}</option>`).join('');
+        const customOption = (el.source && !allImages.some(f => f.path === el.source))
+            ? `<option value="${el.source}" selected>${el.source} (aktuell)</option>` : '';
+        html += `<div class="form-group">
+            <label>Quelle</label>
+            <select data-k="source"><option value="">— wählen —</option>${customOption}${opts}</select>
+            <div class="hint">Aus allen Subordnern von images/. Neue Bilder im 📁 Dateien-Tab hochladen.</div>
+        </div>`;
+        html += field('width', 'Breite (px)', el.width, 'number');
+        html += select('align', 'Ausrichtung', el.align || 'center', ['left','center','right']);
+        html += field('brightness', 'Helligkeit (1.0 = unverändert, 0.5 dunkler, 2.0 heller)', el.brightness ?? 1.0, 'number');
+    } else if (el.type === 'photo') {
+        html += field('brightness', 'Helligkeit (1.0 = unverändert)', el.brightness, 'number');
+        // Fokus-Feld: disabled wenn Kamera kein elektronischer manueller Fokus.
+        const fcaps = _cameraCapsCache;
+        const focusEnabled = fcaps ? !!fcaps.hasManualFocus : true;  // wenn caps noch nicht da: editierbar (safe-default)
+        const focusVal = el.focusAbsolute ?? -1;
+        const focusHint = !fcaps
+            ? ''
+            : (fcaps.hasManualFocus
+                ? '<div class="hint">Kamera unterstützt elektronischen Fokus.</div>'
+                : '<div class="hint">Diese Kamera hat keinen elektronischen Fokus — Wert wird beim Foto ignoriert (am Linsenrad einstellen).</div>');
+        html += `<div class="form-group">
+            <label>Kamera-Fokus (-1 = Autofokus, 0-255 = manuell)</label>
+            <input type="number" data-k="focusAbsolute" value="${focusVal}" ${focusEnabled ? '' : 'disabled style="opacity:.55;cursor:not-allowed;"'}>
+            ${focusHint}
+        </div>`;
+        html += field('width', 'Breite (leer = volle Druckerbreite)', el.width, 'number');
+        const wmVal = (typeof el.useWatermark === 'boolean') ? String(el.useWatermark) : '';
+        html += `<div class="form-group">
+            <label>Wasserzeichen</label>
+            <select data-k="useWatermark">
+                <option value=""      ${wmVal === ''      ? 'selected' : ''}>Automatisch (folgt Upload-Einstellung)</option>
+                <option value="true"  ${wmVal === 'true'  ? 'selected' : ''}>Mit Wasserzeichen</option>
+                <option value="false" ${wmVal === 'false' ? 'selected' : ''}>Ohne Wasserzeichen</option>
+            </select>
+            <div class="hint">„Automatisch" nimmt den Wert „Auf Bondruck anwenden" aus dem Upload-Tab.</div>
+        </div>`;
+    } else if (el.type === 'qrcode') {
+        html += field('data', 'Daten / URL', el.data);
+        html += field('fallback', 'Fallback wenn data leer', el.fallback);
+        html += field('size', 'Größe (px)', el.size, 'number');
+        html += select('align', 'Ausrichtung', el.align || 'center', ['left','center','right']);
+        html += select('errorCorrection', 'Fehlerkorrektur', el.errorCorrection || 'M', ['L','M','Q','H']);
+    } else if (el.type === 'line') {
+        html += field('char', 'Zeichen', el.char || '-');
+        html += field('width', 'Anzahl Zeichen', el.width, 'number');
+        html += select('align', 'Ausrichtung', el.align || 'center', ['left','center','right']);
+    } else if (el.type === 'feed') {
+        html += field('lines', 'Anzahl Zeilen', el.lines, 'number');
+    } else if (el.type === 'cut') {
+        html += select('mode', 'Cut-Modus', el.mode || 'partial', ['partial','full']);
+    }
+    return html;
+}
+
+function saveModal() {
+    document.querySelectorAll('#modal-body [data-k]').forEach(inp => {
+        const k = inp.dataset.k; let v;
+        if (inp.type === 'checkbox') v = inp.checked;
+        else if (inp.type === 'number') v = inp.value === '' ? undefined : parseFloat(inp.value);
+        else {
+            v = inp.value;
+            // String-Bools aus Selects in echte Booleans casten (für 3-state-selects wie useWatermark)
+            if (v === 'true') v = true;
+            else if (v === 'false') v = false;
+        }
+        if (v === '' || v == null) delete configState.layout[editingIdx][k]; else configState.layout[editingIdx][k] = v;
+    });
+    closeModal();
+    renderLayoutList();
+}
+
+function closeModal() { document.getElementById('modal-edit').classList.remove('active'); editingIdx = -1; }
+
+// ----- Presets -----
+function setupPresetHandlers() {
+    document.getElementById('btn-preset-save').addEventListener('click', () => {
+        document.getElementById('presetSaveName').value = '';
+        document.getElementById('presetIncludeLayout').checked = true;
+        document.getElementById('presetIncludeUpload').checked = false;
+        document.getElementById('presetIncludeWatermark').checked = false;
+        document.getElementById('modal-preset-save').classList.add('active');
+    });
+    document.getElementById('preset-save-cancel').addEventListener('click', () => {
+        document.getElementById('modal-preset-save').classList.remove('active');
+    });
+    document.getElementById('preset-save-confirm').addEventListener('click', async () => {
+        const name = document.getElementById('presetSaveName').value.trim();
+        if (!name) { alert('Bitte Namen vergeben.'); return; }
+        const body = {
+            includeLayout:    document.getElementById('presetIncludeLayout').checked,
+            includeUpload:    document.getElementById('presetIncludeUpload').checked,
+            includeWatermark: document.getElementById('presetIncludeWatermark').checked,
+            layout:    configState.layout,
+            upload:    configState.upload,
+            watermark: configState.watermark,
+        };
+        try {
+            const resp = await fetch('/api/presets/' + encodeURIComponent(name), {
+                method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+            });
+            const r = await resp.json();
+            if (resp.ok) {
+                showMsg('layout', r.message, 'success');
+                document.getElementById('modal-preset-save').classList.remove('active');
+                await loadPresets();
+                document.getElementById('presetSelect').value = r.name;
+            } else showMsg('layout', r.error, 'error');
+        } catch (e) { showMsg('layout', e.message, 'error'); }
+    });
+
+    document.getElementById('btn-preset-load').addEventListener('click', async () => {
+        const name = document.getElementById('presetSelect').value;
+        if (!name) { showMsg('layout', 'Erst Vorlage auswählen.', 'error'); return; }
+        if (!confirm(`Vorlage "${name}" jetzt anwenden? (überschreibt aktuelle layout / upload / watermark, je nach was die Vorlage enthält)`)) return;
+        try {
+            const resp = await fetch('/api/presets/' + encodeURIComponent(name) + '/apply', { method:'POST' });
+            const r = await resp.json();
+            if (resp.ok) {
+                showMsg('layout', r.message, 'success');
+                // Aktuelle Config neu laden
+                await loadConfig();
+                await loadCounter();
+            } else showMsg('layout', r.error, 'error');
+        } catch (e) { showMsg('layout', e.message, 'error'); }
+    });
+
+    document.getElementById('btn-preset-delete').addEventListener('click', async () => {
+        const name = document.getElementById('presetSelect').value;
+        if (!name) { showMsg('layout', 'Erst Vorlage auswählen.', 'error'); return; }
+        if (!confirm(`Vorlage "${name}" wirklich löschen?`)) return;
+        try {
+            const resp = await fetch('/api/presets/' + encodeURIComponent(name), { method:'DELETE' });
+            const r = await resp.json();
+            if (resp.ok) {
+                showMsg('layout', r.message, 'success');
+                await loadPresets();
+            } else showMsg('layout', r.error, 'error');
+        } catch (e) { showMsg('layout', e.message, 'error'); }
+    });
+}
+
+function showLayoutHint() {
+    alert(
+        'Element-Typen:\n\n' +
+        '• image  — Bild aus images/\n' +
+        '• text   — Text mit Platzhaltern\n' +
+        '• photo  — aktuelles Foto (dithered)\n' +
+        '• qrcode — dynamischer QR\n' +
+        '• line   — Trennlinie\n' +
+        '• feed   — Papier-Vorschub\n' +
+        '• cut    — Schnitt\n\n' +
+        'Platzhalter:\n' +
+        '{{counter}}, {{boxName}}, {{date}}, {{time}},\n' +
+        '{{timestamp:DD.MM.YYYY HH:mm}}, {{photoUrl}}'
+    );
+}
+
+async function loadFiles() {
+    try {
+        const f = await fetch('/api/files').then(r=>r.json());
+        renderFileList('logosOBEN', f.logosTop || []);
+        renderFileList('qr',         f.qrCodes || []);
+        renderFileList('logosUNTEN', f.logosBottom || []);
+        renderFileList('watermark',  f.watermarks || []);
+        // Wenn Dateien sich geändert haben → Cache + Watermark-Dropdown aktualisieren
+        await loadAllImages();
+    } catch (e) { showMsg('files', e.message, 'error'); }
+}
+
+function renderFileList(folder, files) {
+    const id = folder === 'logosOBEN' ? 'filesLogosOBEN'
+             : folder === 'qr'         ? 'filesQr'
+             : folder === 'logosUNTEN' ? 'filesLogosUNTEN'
+             : folder === 'watermark'  ? 'filesWatermark' : null;
+    const list = id ? document.getElementById(id) : null;
+    if (!list) return;
+    if (files.length === 0) {
+        list.innerHTML = '<div class="file-item" style="color:#999;">Keine Dateien</div>';
+        return;
+    }
+    list.innerHTML = files.map(f => `
+        <div class="file-item">
+            <div>
+                <div class="file-name">${escapeHtml(f.name)}</div>
+                <div class="file-size">${formatBytes(f.size)}</div>
+            </div>
+            <button class="btn-delete" onclick="deleteFile('${folder}', '${f.name}')">🗑 Löschen</button>
+        </div>`).join('');
+}
+
+function formatBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+    return (b/(1024*1024)).toFixed(1) + ' MB';
+}
+
+window.deleteFile = async (folder, name) => {
+    if (!confirm('Datei "' + name + '" löschen?')) return;
+    try {
+        const r = await fetch(`/api/files/${folder}/${name}`, { method:'DELETE' }).then(x=>x.json());
+        if (r.success) { showMsg('files', r.message, 'success'); loadFiles(); }
+        else showMsg('files', r.error, 'error');
+    } catch (e) { showMsg('files', e.message, 'error'); }
+};
+
+function setupFileForms() {
+    document.querySelectorAll('.upload-form').forEach(form => {
+        const folder = form.dataset.folder;
+        const inputId = folder === 'logosOBEN' ? 'fileLogosOBEN'
+                       : folder === 'qr'         ? 'fileQr'
+                       : folder === 'logosUNTEN' ? 'fileLogosUNTEN'
+                       : folder === 'watermark'  ? 'fileWatermark' : null;
+        const dispId  = folder === 'logosOBEN' ? 'selectedLogosOBEN'
+                       : folder === 'qr'         ? 'selectedQr'
+                       : folder === 'logosUNTEN' ? 'selectedLogosUNTEN'
+                       : folder === 'watermark'  ? 'selectedWatermark' : null;
+        if (!inputId || !dispId) return;
+        const input = document.getElementById(inputId);
+        const disp  = document.getElementById(dispId);
+        input.addEventListener('change', e => {
+            if (e.target.files.length > 0) { disp.textContent = '📄 ' + e.target.files[0].name; disp.style.display = 'block'; }
+            else disp.style.display = 'none';
+        });
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            if (!input.files.length) { showMsg('files', 'Keine Datei gewählt', 'error'); return; }
+            const fd = new FormData();
+            fd.append('file-' + folder, input.files[0]);
+            try {
+                const r = await fetch('/api/upload/' + folder, { method:'POST', body:fd }).then(x=>x.json());
+                if (r.success) { showMsg('files', r.message, 'success'); input.value = ''; disp.style.display = 'none'; loadFiles(); }
+                else showMsg('files', r.error, 'error');
+            } catch (e) { showMsg('files', e.message, 'error'); }
+        });
+    });
+}
+</script>
+</body>
+</html>

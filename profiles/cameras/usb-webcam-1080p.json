@@ -1,0 +1,25 @@
+{
+  "name": "USB Webcam 1080p (Autofokus + optional manueller Fokus)",
+  "meta": {
+    "vendor": "Generic",
+    "model": "USB Webcam 1080p (electronic focus)",
+    "verified": true,
+    "verifiedBy": "Andreas",
+    "verifiedAt": "2026-05-30",
+    "deviceNameMatch": null,
+    "preferredControls": ["focus_absolute", "focus_automatic_continuous"],
+    "notes": "Generischer Fallback fuer USB Webcams mit elektronischem Fokus (focus_absolute Control)."
+  },
+  "tool": "fswebcam",
+  "resolution": "1920x1080",
+  "crop": "1080x1080",
+  "noBanner": true,
+  "skipFramesAutofocus": 30,
+  "skipFramesManualFocus": 5,
+  "supportsManualFocus": true,
+  "manualFocus": {
+    "disableAutoCommand": "v4l2-ctl --set-ctrl=focus_automatic_continuous=0",
+    "setFocusCommand": "v4l2-ctl --set-ctrl=focus_absolute={value}",
+    "range": [0, 255]
+  }
+}

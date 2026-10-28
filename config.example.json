@@ -1,0 +1,83 @@
+{
+  "_comment": "Template. Kopieren als config.json und an Box anpassen. Liegt pro Box lokal (in .gitignore).",
+
+  "boxName": "Fotobox",
+
+  "printer": {
+    "profile": "aures-odp-333",
+    "ip": "auto",
+    "subnet": "auto",
+    "scanFrom": 10,
+    "scanTo": 250
+  },
+
+  "camera": {
+    "profile": "usb-webcam-1080p",
+    "focusAbsolute": 60
+  },
+
+  "gpio": {
+    "buttonPin": 27,
+    "ledPin": 17
+  },
+
+  "photoBrightness": 1.5,
+
+  "watermark": {
+    "_comment": "Wasserzeichen. Wird nur erstellt wenn applyToBonPrint ODER applyToDownload aktiv.",
+    "enabled": true,
+    "type": "both",
+    "applyToBonPrint": false,
+    "applyToDownload": true,
+    "text": {
+      "content": "© {{boxName}} • {{date}}",
+      "fontSize": 48,
+      "color": "white",
+      "opacity": 0.6,
+      "position": "bottom-right",
+      "margin": 30
+    },
+    "image": {
+      "source": "images/logosUNTEN/logo.png",
+      "scale": 0.15,
+      "opacity": 0.6,
+      "position": "bottom-left",
+      "margin": 30
+    }
+  },
+
+  "layout": [
+    { "type": "image",  "source": "images/logosOBEN/logo.png",  "width": 512 },
+    { "type": "text",   "content": "Musterstraße 1, 12345 Musterstadt", "align": "center" },
+    { "type": "feed",   "lines": 1 },
+    { "type": "photo",  "brightness": 1.5 },
+    { "type": "feed",   "lines": 1 },
+    { "type": "text",   "content": "Bon Nr. {{counter}} • {{date}} {{time}}", "align": "center" },
+    { "type": "qrcode", "data": "{{photoUrl}}", "fallback": "https://example.com", "size": 200, "align": "center" },
+    { "type": "feed",   "lines": 1 },
+    { "type": "image",  "source": "images/logosUNTEN/logo.png", "width": 50, "align": "center" },
+    { "type": "feed",   "lines": 6 },
+    { "type": "cut" }
+  ],
+
+  "upload": {
+    "enabled": true,
+    "remote": "gdrive",
+    "folderName": "Fotobox",
+    "publicSubfolder": "Public",
+    "mode": "directLink",
+    "uploadTimeoutMs": 20000,
+    "maxPending": 100
+  },
+
+  "_modes": {
+    "normal":     "Foto → Druck → async Upload in den Drive-Ordner. Kein dynamischer QR.",
+    "directLink": "Foto → (Watermark) → sync Upload (Original im Drive-Ordner, Download-Version im Public-Unterordner mit Share-Link) → Druck mit {{photoUrl}} im QR. Fallback bei Timeout/Fehler."
+  },
+
+  "_layoutHints": {
+    "placeholders": "{{counter}}, {{boxName}}, {{date}}, {{time}}, {{timestamp:DD.MM.YYYY HH:mm}}, {{photoUrl}}, {{config.xyz}}",
+    "photo_modifier": { "type": "photo", "useWatermark": true, "brightness": 1.5, "_note": "useWatermark überschreibt watermark.applyToBonPrint pro Element" },
+    "qr_with_fallback": { "type": "qrcode", "data": "{{photoUrl}}", "fallback": "https://example.de", "size": 200 }
+  }
+}

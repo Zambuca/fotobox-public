@@ -1,0 +1,21 @@
+{
+  "name": "USB Webcam mit Fixed-Focus (kein manueller Fokus)",
+  "meta": {
+    "vendor": "Generic",
+    "model": "USB Webcam (no electronic focus, fixed or mechanical)",
+    "verified": true,
+    "verifiedBy": "Andreas",
+    "verifiedAt": "2026-05-30",
+    "deviceNameMatch": null,
+    "preferredControls": [],
+    "notes": "Fuer Webcams ohne v4l2 Fokus Controls. Live Preview im UI hilft bei mechanischem Fokus am Linsenrad."
+  },
+  "tool": "fswebcam",
+  "resolution": "1920x1080",
+  "crop": "1080x1080",
+  "noBanner": true,
+  "skipFramesAutofocus": 20,
+  "skipFramesManualFocus": 5,
+  "supportsManualFocus": false,
+  "_comment": "Für Webcams ohne v4l2-Fokus-Controls. Der UI-Slider 'Manueller Fokus' wird vom Code ignoriert, weil supportsManualFocus=false."
+}

@@ -1,0 +1,37 @@
+# Node
+node_modules/
+
+# Box-spezifische / dynamische Files (laufen lokal auf der Box, nie im Repo)
+config.json
+printer_ip.txt
+counter.json
+error.flag
+upload.log
+foto.jpg
+foto-wm.jpg
+foto-test.jpg
+foto-test-wm.jpg
+pending_uploads/
+presets/
+.folder_id_cache.json
+last_activity.json
+testpattern.jpg
+
+# Sensible Daten - werden NIE committet
+credentials.json
+google-token.json
+service-account.json
+secrets/
+*.pem
+*.key
+
+# Lokale Test-/Hilfsfiles
+neu.jpeg
+focus.jpeg
+*.test.jpg
+
+# IDE / OS
+.DS_Store
+.vscode/
+.idea/
+.claude/

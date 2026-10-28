@@ -1,0 +1,24 @@
+{
+  "name": "Raspberry Pi Camera V2 / V3 (libcamera-still)",
+  "meta": {
+    "vendor": "Raspberry Pi",
+    "model": "Camera Module V2 / V3 (CSI ribbon)",
+    "verified": true,
+    "verifiedBy": "Andreas",
+    "verifiedAt": "2026-05-30",
+    "deviceNameMatch": null,
+    "preferredControls": [],
+    "notes": "Pi Camera ueber CSI Anschluss. Nutzt libcamera-still, nicht v4l2. Wenn libcamera-hello eine Camera meldet, ist diese hier richtig."
+  },
+  "tool": "libcamera-still",
+  "resolution": "1920x1080",
+  "crop": "1080x1080",
+  "noBanner": true,
+  "skipFramesAutofocus": 0,
+  "skipFramesManualFocus": 0,
+  "supportsManualFocus": true,
+  "manualFocus": {
+    "_comment": "libcamera-still nutzt --lens-position direkt im Kommando (siehe TakePhotoAfter3sAndPrint.js)",
+    "range": [0.0, 10.0]
+  }
+}

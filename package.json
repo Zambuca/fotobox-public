@@ -1,0 +1,17 @@
+{
+  "name": "fotobox",
+  "version": "2.1.0",
+  "description": "Raspberry-Pi-Fotobox in Node.js: Knopf → Foto → Bon-Druck mit Layout-Builder, Drucker-/Kamera-Profilen und optionalem Google-Drive-Upload",
+  "dependencies": {
+    "express": "^5.1.0",
+    "googleapis": "^144.0.0",
+    "multer": "^2.0.2",
+    "node-addon-api": "^8.5.0",
+    "onoff": "^6.0.3",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "node-gyp": "^12.1.0"
+  }
+}

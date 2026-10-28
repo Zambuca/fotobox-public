@@ -1,0 +1,10 @@
+{
+  "name": "Fotobox Konfiguration",
+  "short_name": "Fotobox",
+  "description": "Konfiguration für die Fotobox",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#a5b4fc",
+  "theme_color": "#a5b4fc",
+  "orientation": "portrait"
+}
