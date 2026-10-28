@@ -22,6 +22,10 @@ Im produktiven Dauerbetrieb erprobt (2 Boxen).
 - **Nativer Google-Drive-Upload** (googleapis, kein rclone-Subprocess) mit Pending-Queue bei fehlender Verbindung
 - **Capabilities-aware UI:** Die Web-UI zeigt nur an, was die erkannte Kamera tatsächlich kann
 
+## Betrieb
+
+Im produktiven Einsatz aktualisieren sich alle Boxen selbst: Alle 5 Minuten prüft ein Timer, ob im Git-Repo neuer Code liegt, und installiert ihn automatisch – ohne dass jemand vor Ort eingreifen muss. So lässt sich die ganze Flotte von einem Rechner aus auf den neuesten Stand bringen. Die konkreten Deployment-Skripte sind in dieser Portfolio-Edition nicht enthalten.
+
 ## Projektstruktur
 
 ```
