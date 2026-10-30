@@ -2,7 +2,7 @@
 
 Raspberry-Pi-basierte Fotobox in Node.js: Knopf drücken → USB-Webcam macht ein Foto → Thermo-Bondrucker druckt einen Bon mit Logo, Texten, Foto und QR-Code → optional Upload zu Google Drive.
 
-Im produktiven Dauerbetrieb erprobt (2 Boxen).
+Im produktiven Dauerbetrieb erprobt (eine Box im Dauerbetrieb, eine zweite als Testgerät).
 
 ## Hardware (typische Box)
 
